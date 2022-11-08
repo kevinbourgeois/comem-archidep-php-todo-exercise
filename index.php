@@ -1,4 +1,5 @@
 <?php
+//COUCOU
 
 // The base path under which the application is exposed. For example, if you are
 // accessing the application at
