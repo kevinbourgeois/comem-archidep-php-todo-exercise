@@ -1,5 +1,4 @@
 <?php
-//COUCOU
 
 // The base path under which the application is exposed. For example, if you are
 // accessing the application at
@@ -7,12 +6,14 @@
 // should be "/comem-archidep-php-todo-exercise/". If you are accessing the
 // application at "http://localhost:8888", then BASE_URL should be "/".
 define('BASE_URL', getenv('TODOLIST_BASE_URL') ?: '/');
+
+
 // Database connection parameters.
-define('DB_USER', getenv('TODOLIST_DB_USER'));
+define('DB_USER', 'todolist');
 define('DB_PASS', getenv('TODOLIST_DB_PASS'));
-define('DB_NAME', getenv('TODOLIST_DB_NAME'));
-define('DB_HOST', getenv('TODOLIST_DB_HOST') ?: '127.0.0.1');
-define('DB_PORT', getenv('TODOLIST_DB_PORT') ?: '3306');
+define('DB_NAME', 'todolist');
+define('DB_HOST', '127.0.0.1');
+define('DB_PORT', '3306');
 
 $db = new PDO('mysql:host='.DB_HOST.';port='.DB_PORT.';dbname='.DB_NAME, DB_USER, DB_PASS);
 $items = array();
@@ -44,7 +45,20 @@ if (isset($_POST['action'])) {
 
       $id = $_POST['id'];
       if(is_numeric($id)) {
-        $updateQuery = ''; // IMPLEMENT ME
+          $selectQuery = 'SELECT todo.done FROM `todo` WHERE id = '.$id;
+          $items = $db->query($selectQuery);
+         $items = $items->fetchAll();
+        $val = 0;
+         if ($items[0]['done'] ==0)
+         {
+           $val = 1;
+         }
+         else
+         {
+             $val = 0;
+         }
+
+        $updateQuery = 'UPDATE todo SET todo.done ='.$val.' WHERE todo.id ='.$id; // IMPLEMENT ME
         if(!$db->query($updateQuery)) {
           die(print_r($db->errorInfo(), true));
         }
@@ -60,7 +74,7 @@ if (isset($_POST['action'])) {
 
       $id = $_POST['id'];
       if(is_numeric($id)) {
-        $deleteQuery = ''; // IMPLEMENT ME
+        $deleteQuery = 'DELETE FROM todo WHERE todo.id' . $id;
         if(!$db->query($deleteQuery)) {
           die(print_r($db->errorInfo(), true));
         }
@@ -77,7 +91,7 @@ if (isset($_POST['action'])) {
 /**
  * Select all tasks from the database.
  */
-$selectQuery = ''; // IMPLEMENT ME
+$selectQuery = 'SELECT * FROM `todo` ORDER BY todo.created_at DESC';
 $items = $db->query($selectQuery);
 ?>
 
